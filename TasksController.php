@@ -125,8 +125,6 @@
 			$this->view = 'tasklist';
 		}
 
-		ippp
-
 		private function handleAddTask() {
 			if (!$this->verifyLogin()) return;
 
