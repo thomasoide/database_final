@@ -16,7 +16,7 @@
 		public function __construct() {
 			session_start();
 			$this->initDatabaseConnection();
-			echo "<p>Connection established</p>"
+			echo "<p>Connection established</p>";
 			//$this->restoreOrdering();
 			//$this->restoreUser();
 		}
