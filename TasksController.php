@@ -14,7 +14,7 @@
 
 		public function __construct() {
 			$this->model = new TasksModel();
-			$this->views = new views();
+			$this->views = new TasksViews();
 
 			$this->view = $_GET['view'] ? $_GET['view'] : 'tasklist';
 			$this->action = $_POST['action'];
