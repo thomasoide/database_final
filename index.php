@@ -1,8 +1,7 @@
 <?php
-	// Model-View-Controller implementation of Task Manager
+	
+	require('TasksController.php');
 
-	require('controller.php');
-
-	$controller = new controller();
+	$controller = new TasksController();
 	$controller->run();
 ?>
