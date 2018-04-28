@@ -1,6 +1,6 @@
 <?php
 	require('TasksModel.php');
-	require('views.php');
+	require('TasksViews.php');
 
 	class TasksController {
 		private $model;
@@ -125,14 +125,7 @@
 			$this->view = 'tasklist';
 		}
 
-		// private function handleSetCompletionStatus($status) {
-		// 	if (!$this->verifyLogin()) return;
-		//
-		// 	if ($error = $this->model->updateTaskCompletionStatus($_POST['id'], $status)) {
-		// 		$this->message = $error;
-		// 	}
-		// 	$this->view = 'tasklist';
-		// }
+		ippp
 
 		private function handleAddTask() {
 			if (!$this->verifyLogin()) return;

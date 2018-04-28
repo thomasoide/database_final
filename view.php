@@ -32,8 +32,7 @@
                array('name' => 'account_id', label => 'Account ID'),
                array('name' => 'accountType', label => 'Account Type'),
                array('name' => 'rating', label => 'Rating'),
-               array('name' => 'balance', label => 'Balance')
-      );
+               array('name' => 'balance', label => 'Balance'));
 
       foreach ($columns as $column) {
 				$name = $column['name'];
