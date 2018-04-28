@@ -137,7 +137,7 @@
 <input type='hidden' name='action' value='login' />
 <p>User ID<br />
   <input type="text" name="loginID" value="$loginID" placeholder="login id" maxlength="255" size="80"></p>
-<p>Title<br />
+<p>Password<br />
   <input type="password" name="password" value="" placeholder="password" maxlength="255" size="80"></p>
   <input type="submit" name='submit' value="Login">
 </form>
