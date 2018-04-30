@@ -2,39 +2,39 @@
 
 	class TasksViews {
 		private $stylesheet = 'taskmanager.css';
-		private $pageTitle = 'Tasks';
-		
+		private $pageTitle = 'Accounts';
+
 		public function __construct() {
 
 		}
-		
+
 		public function __destruct() {
 
 		}
-		
+
 		public function taskListView($tasks, $orderBy = 'title', $orderDirection = 'asc', $message = '') {
-			$body = "<h1>Tasks</h1>\n";
-		
+			$body = "<h1>Accounts</h1>\n";
+
 			if ($message) {
 				$body .= "<p class='message'>$message</p>\n";
 			}
-		
+
 			$body .= "<p><a class='taskButton' href='index.php?view=taskform'>+ Add Task</a></p>\n";
-	
+
 			if (count($tasks) < 1) {
 				$body .= "<p>No tasks to display!</p>\n";
 				return $body;
 			}
-	
+
 			$body .= "<table>\n";
-			$body .= "<tr><th>delete</th><th>edit</th><th>completed</th>";
-		
-			$columns = array(array('name' => 'addDate', 'label' => 'add date'), 
-							 array('name' => 'completedDate', 'label' => 'completed date'), 
-							 array('name' => 'title', 'label' => 'title'), 
-							 array('name' => 'description', 'label' => 'description'), 
-							 array('name' => 'category', 'label' => 'category'));
-		
+			$body .= "<tr><th>delete</th><th>edit</th>";
+
+			$columns = array(array('name' => 'email', label=> 'Email'),
+               array('name' => 'id', label => 'Account ID'),
+               array('name' => 'accountType', label => 'Account Type'),
+               array('name' => 'rating', label => 'Rating'),
+               array('name' => 'balance', label => 'Balance'));
+
 			// geometric shapes in unicode
 			// http://jrgraphix.net/r/Unicode/25A0-25FF
 			foreach ($columns as $column) {
@@ -49,7 +49,7 @@
 				}
 				$body .= "<th><a class='order' href='index.php?orderby=$name'>$label</a></th>";
 			}
-	
+
 			foreach ($tasks as $task) {
 				$id = $task['id'];
 				$addDate = $task['addDate'];
@@ -57,14 +57,14 @@
 				$title = $task['title'];
 				$description = ($task['description']) ? $task['description'] : '';
 				$category = $task['category'];
-			
+
 				$completedAction = 'set_completed';
 				$completedLabel = 'not completed';
 				if ($completedDate) {
 					$completedAction = 'set_not_completed';
 					$completedLabel = 'completed';
 				}
-			
+
 				$body .= "<tr>";
 				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='delete' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Delete'></form></td>";
 				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='edit' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Edit'></form></td>";
@@ -73,10 +73,10 @@
 				$body .= "</tr>\n";
 			}
 			$body .= "</table>\n";
-	
+
 			return $this->page($body);
 		}
-		
+
 		public function taskFormView($data = null, $message = '') {
 			$category = '';
 			$title = '';
@@ -90,7 +90,7 @@
 			} else {
 				$selected['uncategorized'] = 'selected';
 			}
-	
+
 			$html = <<<EOT1
 <!DOCTYPE html>
 <html>
@@ -105,16 +105,16 @@ EOT1;
 			if ($message) {
 				$html .= "<p class='message'>$message</p>\n";
 			}
-		
+
 			$html .= "<form action='index.php' method='post'>";
-		
+
 			if ($data['id']) {
 				$html .= "<input type='hidden' name='action' value='update' />";
 				$html .= "<input type='hidden' name='id' value='{$data['id']}' />";
 			} else {
 				$html .= "<input type='hidden' name='action' value='add' />";
 			}
-		
+
 			$html .= <<<EOT2
   <p>Category<br />
   <select name="category">
@@ -138,14 +138,14 @@ EOT2;
 
 			print $html;
 		}
-		
+
 		public function errorView($message) {
 			$body = "<h1>Tasks</h1>\n";
 			$body .= "<p>$message</p>\n";
-			
+
 			return $this->page($body);
 		}
-		
+
 		private function page($body) {
 			$html = <<<EOT
 <!DOCTYPE html>
