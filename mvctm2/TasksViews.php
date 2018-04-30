@@ -68,7 +68,7 @@
 			return $this->page($body);
 		}
 
-		public function taskFormView($data = null, $message = '') {
+		public function taskFormView($data, $message = '') {
 			$firstName = '';
 			$lastName = '';
 			$email = '';
@@ -93,7 +93,7 @@ EOT1;
 				$html .= "<p class='message'>$message</p>\n";
 			}
 
-			$html .= "<form action='index.php' method='post'>";
+			$html .= "<form action='index.php' method='POST'>";
 
 			if ($data['id']) {
 				$html .= "<input type='hidden' name='action' value='update' />";

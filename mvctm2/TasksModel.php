@@ -135,11 +135,9 @@
 				return $this->error;
 			}
 
-
 			$firstEscaped = $this->mysqli->real_escape_string($firstName);
 			$lastEscaped = $this->mysqli->real_escape_string($lastName);
 			$emailEscaped = $this->mysqli->real_escape_string($email);
-
 
 			$sql = "INSERT INTO client (firstName, email, lastName) VALUES ('$firstEscaped', '$emailEscaped', '$lastEscaped')";
 
