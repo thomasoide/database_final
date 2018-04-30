@@ -60,21 +60,21 @@
 					print $this->views->taskFormView($this->data, $this->message);
 					break;
 				default: // 'tasklist'
-					list($orderBy, $orderDirection) = $this->model->getOrdering();
+					// list($orderBy, $orderDirection) = $this->model->getOrdering();
 					list($tasks, $error) = $this->model->getTasks();
 					if ($error) {
 						$this->message = $error;
 					}
-					print $this->views->taskListView($tasks, $orderBy, $orderDirection, $this->message);
+					print $this->views->taskListView($tasks, /*$orderBy, $orderDirection,*/ $this->message);
 			}
 
 		}
 
-		private function processOrderby() {
-			if ($_GET['orderby']) {
-				$this->model->toggleOrder($_GET['orderby']);
-			}
-		}
+		// private function processOrderby() {
+		// 	if ($_GET['orderby']) {
+		// 		$this->model->toggleOrder($_GET['orderby']);
+		// 	}
+		// }
 
 		private function handleDelete() {
 			if ($error = $this->model->deleteTask($_POST['id'])) {

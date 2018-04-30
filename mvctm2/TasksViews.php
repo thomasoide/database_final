@@ -12,14 +12,14 @@
 
 		}
 
-		public function taskListView($tasks, $orderBy = 'title', $orderDirection = 'asc', $message = '') {
+		public function taskListView($tasks, /*$orderBy = 'title', $orderDirection = 'asc',*/ $message = '') {
 			$body = "<h1>Accounts</h1>\n";
 
 			if ($message) {
 				$body .= "<p class='message'>$message</p>\n";
 			}
 
-			$body .= "<p><a class='taskButton' href='index.php?view=taskform'>+ Add Task</a></p>\n";
+			$body .= "<p><a class='taskButton' href='index.php?view=taskform'>+ Add Account</a></p>\n";
 
 			if (count($tasks) < 1) {
 				$body .= "<p>No tasks to display!</p>\n";
@@ -29,11 +29,11 @@
 			$body .= "<table>\n";
 			$body .= "<tr><th>delete</th><th>edit</th>";
 
-			$columns = array(array('name' => 'email', label=> 'Email'),
-               array('name' => 'id', label => 'Account ID'),
-               array('name' => 'accountType', label => 'Account Type'),
-               array('name' => 'rating', label => 'Rating'),
-               array('name' => 'balance', label => 'Balance'));
+			$columns = array(array('name' => 'id', label=> 'Client ID'),
+               array('name' => 'firstName', label => 'First Name'),
+               array('name' => 'lastName', label => 'Last Name'),
+               array('name' => 'email', label => 'Email'),
+               array('name' => 'clientSince', label => 'Client Since'));
 
 			// geometric shapes in unicode
 			// http://jrgraphix.net/r/Unicode/25A0-25FF
@@ -52,15 +52,15 @@
 
 			foreach ($tasks as $task) {
 				$id = $task['id'];
-				$addDate = $task['email'];
-				$completedDate = ($task['accountType']) ? $task['accountType'] : '';
-				$description = ($task['rating']) ? $task['rating'] : '';
-				$category = $task['balance'];
+				$firstName = $task['firstName'];
+				$lastName = $task['lastName'];
+				$email = $task['email'];
+				$clientSince = $task['clientSince'];
 
 				$body .= "<tr>";
 				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='delete' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Delete'></form></td>";
 				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='edit' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Edit'></form></td>";
-				$body .= "<td>$addDate</td><td>$completedDate</td><td>$description</td><td>$category</td>";
+				$body .= "<td>$id</td><td>$firstName</td><td>$lastName</td><td>$email</td><td>$clientSince</td>";
 				$body .= "</tr>\n";
 			}
 			$body .= "</table>\n";
@@ -69,13 +69,13 @@
 		}
 
 		public function taskFormView($data = null, $message = '') {
-			$category = '';
-			$title = '';
-			$description = '';
+			$firstName = '';
+			$lastName = '';
+			$email = '';
 			if ($data) {
-				$category = $data['balance'];
-				$title = $data['email'];
-				$description = $data['rating'];
+				$firstName = $data['firstName'];
+				$lastName = $data['lastName'];
+				$email = $data['email'];
 			}
 
 			$html = <<<EOT1
@@ -103,15 +103,19 @@ EOT1;
 			}
 
 			$html .= <<<EOT2
-  <p>Balance<br />
-  	<input type="text" name="title" value="$category" placeholder="title" maxlength="255" size="80"></p>
+  <p>First Name<br />
+  	<input type="text" name="First Name" value="$firstName" placeholder="First Name" maxlength="255" size="80"></p>
   </p>
 
-  <p>Title<br />
-  <input type="text" name="title" value="$title" placeholder="title" maxlength="255" size="80"></p>
+  <p>Last Name<br />
+  <input type="text" name="Last Name" value="$lastName" placeholder="Last Name" maxlength="255" size="80"></p>
 
-  <p>Description<br />
-  <textarea name="description" rows="6" cols="80" placeholder="description">$description</textarea></p>
+	<p>Email<br />
+  <input type="text" name="Email" value="$email" placeholder="Email" maxlength="255" size="80"></p>
+
+	<p>Client Since<br />
+  <input type="text" name="Client Since" value="2011-04-12T00:00:00.000" placeholder="Client Since" maxlength="255" size="80"></p>
+
   <input type="submit" name='submit' value="Submit"> <input type="submit" name='cancel' value="Cancel">
 </form>
 </body>

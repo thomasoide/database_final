@@ -3,13 +3,13 @@
 	class TasksModel {
 		private $error = '';
 		private $mysqli;
-		private $orderBy = 'firstName';
+		// private $orderBy = 'firstName';
 		private $orderDirection = 'asc';
 
 		public function __construct() {
 			session_start();
 			$this->initDatabaseConnection();
-			$this->restoreOrdering();
+			// $this->restoreOrdering();
 		}
 
 		public function __destruct() {
@@ -30,33 +30,33 @@
 			}
 		}
 
-		private function restoreOrdering() {
-			$this->orderBy = $_SESSION['orderby'] ? $_SESSION['orderby'] : $this->orderBy;
-			$this->orderDirection = $_SESSION['orderdirection'] ? $_SESSION['orderdirection'] : $this->orderDirection;
+		// private function restoreOrdering() {
+		// 	$this->orderBy = $_SESSION['orderby'] ? $_SESSION['orderby'] : $this->orderBy;
+		// 	$this->orderDirection = $_SESSION['orderdirection'] ? $_SESSION['orderdirection'] : $this->orderDirection;
+		//
+		// 	$_SESSION['orderby'] = $this->orderBy;
+		// 	$_SESSION['orderdirection'] = $this->orderDirection;
+		// }
 
-			$_SESSION['orderby'] = $this->orderBy;
-			$_SESSION['orderdirection'] = $this->orderDirection;
-		}
+		// public function toggleOrder($orderBy) {
+		// 	if ($this->orderBy == $orderBy)	{
+		// 		if ($this->orderDirection == 'asc') {
+		// 			$this->orderDirection = 'desc';
+		// 		} else {
+		// 			$this->orderDirection = 'asc';
+		// 		}
+		// 	} else {
+		// 		$this->orderDirection = 'asc';
+		// 	}
+		// 	$this->orderBy = $orderBy;
+		//
+		// 	$_SESSION['orderby'] = $this->orderBy;
+		// 	$_SESSION['orderdirection'] = $this->orderDirection;
+		// }
 
-		public function toggleOrder($orderBy) {
-			if ($this->orderBy == $orderBy)	{
-				if ($this->orderDirection == 'asc') {
-					$this->orderDirection = 'desc';
-				} else {
-					$this->orderDirection = 'asc';
-				}
-			} else {
-				$this->orderDirection = 'asc';
-			}
-			$this->orderBy = $orderBy;
-
-			$_SESSION['orderby'] = $this->orderBy;
-			$_SESSION['orderdirection'] = $this->orderDirection;
-		}
-
-		public function getOrdering() {
-			return array($this->orderBy, $this->orderDirection);
-		}
+		// public function getOrdering() {
+		// 	return array($this->orderBy, $this->orderDirection);
+		// }
 
 		public function getTasks() {
 			$this->error = '';
@@ -69,7 +69,7 @@
 
 			$orderByEscaped = $this->mysqli->real_escape_string($this->orderBy);
 			$orderDirectionEscaped = $this->mysqli->real_escape_string($this->orderDirection);
-			$sql = "SELECT * FROM client ORDER BY $orderByEscaped $orderDirectionEscaped";
+			$sql = "SELECT * FROM client /*ORDER BY $orderByEscaped $orderDirectionEscaped*/";
 			if ($result = $this->mysqli->query($sql)) {
 				if ($result->num_rows > 0) {
 					while($row = $result->fetch_assoc()) {
@@ -116,32 +116,32 @@
 		public function addTask($data) {
 			$this->error = '';
 
-			$title = $data['firstName'];
-			$category = $data['lastName'];
-			$description = $data['email'];
+			$firstName = $data['firstName'];
+			$lastName = $data['lastName'];
+			$email= $data['email'];
 
-			if (! $title) {
-				$this->error = "No title found for task to add. A title is required.";
+			if (! $firstName ) {
+				$this->error = "No first name given. Please enter your first name.";
 				return $this->error;
 			}
 
-			if (! $category) {
-				$category = 'uncategorized';
+			if (! $lastName ) {
+				$this->error = "No last name given. Please enter your first name.";
+				return $this->error;
 			}
 
-			
-			$titleEscaped = $this->mysqli->real_escape_string($title);		
-			$categoryEscaped = $this->mysqli->real_escape_string($category);
-			$descriptionEscaped = $this->mysqli->real_escape_string($description);
-	
+			if (! $email) {
+				$this->error = 'No email given. Please enter your email.';
+				return $this->error;
+			}
 
 
-			$titleEscaped = $this->mysqli->real_escape_string($title);
-			$categoryEscaped = $this->mysqli->real_escape_string($category);
-			$descriptionEscaped = $this->mysqli->real_escape_string($description);
+			$firstEscaped = $this->mysqli->real_escape_string($firstName);
+			$lastEscaped = $this->mysqli->real_escape_string($lastName);
+			$emailEscaped = $this->mysqli->real_escape_string($email);
 
 
-			$sql = "INSERT INTO tasks (firstName, email, lastName) VALUES ('$titleEscaped', '$descriptionEscaped', '$categoryEscaped', NOW())";
+			$sql = "INSERT INTO client (firstName, email, lastName) VALUES ('$firstEscaped', '$emailEscaped', '$lastEscaped')";
 
 			if (! $result = $this->mysqli->query($sql)) {
 				$this->error = $this->mysqli->error;
@@ -152,12 +152,12 @@
 
 		// public function updateTaskCompletionStatus($id, $status) {
 // 			$this->error = "";
-// 
+//
 // 			$completedDate = 'null';
 // 			if ($status == 'completed') {
 // 				$completedDate = 'NOW()';
 // 			}
-// 
+//
 // 			if (!$id) {
 // 				$this->error = "No task was specified to change completion status.";
 // 			} else {
@@ -167,7 +167,7 @@
 // 					$this->error = $this->mysqli->error;
 // 				}
 // 			}
-// 
+//
 // 			return $this->error;
 // 		}
 
@@ -185,20 +185,30 @@
 				return $this->error;
 			}
 
-			$title = $data['firstName'];
-			if (! $title) {
-				$this->error = "No title found for task to update. A title is required.";
+			$firstName = $data['firstName'];
+			$lastName = $data['lastName'];
+			$email= $data['email'];
+
+			if (! $firstName ) {
+				$this->error = "No first name given. Please enter your first name.";
 				return $this->error;
 			}
 
-			$description = $data['email'];
-			$category = $data['lastName'];
+			if (! $lastName ) {
+				$this->error = "No last name given. Please enter your first name.";
+				return $this->error;
+			}
+
+			if (! $email) {
+				$this->error = 'No email given. Please enter your email.';
+				return $this->error;
+			}
 
 			$idEscaped = $this->mysqli->real_escape_string($id);
-			$titleEscaped = $this->mysqli->real_escape_string($title);
-			$descriptionEscaped = $this->mysqli->real_escape_string($description);
-			$categoryEscaped = $this->mysqli->real_escape_string($category);
-			$sql = "UPDATE tasks SET title='$titleEscaped', description='$descriptionEscaped', category='$categoryEscaped' WHERE id = $idEscaped";
+			$firstEscaped = $this->mysqli->real_escape_string($firstName);
+			$lastEscaped = $this->mysqli->real_escape_string($lastName);
+			$emailEscaped = $this->mysqli->real_escape_string($email);
+			$sql = "UPDATE client SET firstName='$firstEscaped', email='$emailEscaped', lastName='$lastEscaped' WHERE id = $idEscaped";
 			if (! $result = $this->mysqli->query($sql) ) {
 				$this->error = $this->mysqli->error;
 			}
@@ -220,7 +230,7 @@
 			}
 
 			$idEscaped = $this->mysqli->real_escape_string($id);
-			$sql = "DELETE FROM tasks WHERE id = $idEscaped";
+			$sql = "DELETE FROM client WHERE id = $idEscaped";
 			if (! $result = $this->mysqli->query($sql) ) {
 				$this->error = $this->mysqli->error;
 			}
