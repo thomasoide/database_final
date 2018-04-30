@@ -68,7 +68,7 @@
 			return $this->page($body);
 		}
 
-		public function taskFormView($data, $message = '') {
+		public function taskFormView($data = null, $message = '') {
 			$firstName = '';
 			$lastName = '';
 			$email = '';
@@ -104,17 +104,17 @@ EOT1;
 
 			$html .= <<<EOT2
   <p>First Name<br />
-  	<input type="text" name="First Name" value="$firstName" placeholder="First Name" maxlength="255" size="80"></p>
+  	<input type="text" name="firstName" value="$firstName" placeholder="First Name" maxlength="255" size="80"></p>
   </p>
 
   <p>Last Name<br />
-  <input type="text" name="Last Name" value="$lastName" placeholder="Last Name" maxlength="255" size="80"></p>
+  <input type="text" name="lastName" value="$lastName" placeholder="Last Name" maxlength="255" size="80"></p>
 
 	<p>Email<br />
-  <input type="text" name="Email" value="$email" placeholder="Email" maxlength="255" size="80"></p>
+  <input type="text" name="email" value="$email" placeholder="Email" maxlength="255" size="80"></p>
 
 	<p>Client Since<br />
-  <input type="text" name="Client Since" value="2011-04-12T00:00:00.000" placeholder="Client Since" maxlength="255" size="80"></p>
+  <input type="text" name="clientSince" value="2011-04-12T00:00:00.000" placeholder="Client Since" maxlength="255" size="80"></p>
 
   <input type="submit" name='submit' value="Submit"> <input type="submit" name='cancel' value="Cancel">
 </form>

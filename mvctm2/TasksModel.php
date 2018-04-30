@@ -120,20 +120,20 @@
 			$lastName = $data['lastName'];
 			$email= $data['email'];
 
-			if (! $lastName || ! $email) {
-				$this->error = "Error.";
+			if (! $firstName ) {
+				$this->error = "No first name given. Please enter your first name.";
 				return $this->error;
 			}
 
-			// if (! $lastName ) {
-			// 	$this->error = "No last name given. Please enter your first name.";
-			// 	return $this->error;
-			// }
-			//
-			// if (! $email) {
-			// 	$this->error = 'No email given. Please enter your email.';
-			// 	return $this->error;
-			// }
+			if (! $lastName ) {
+				$this->error = "No last name given. Please enter your first name.";
+				return $this->error;
+			}
+
+			if (! $email) {
+				$this->error = 'No email given. Please enter your email.';
+				return $this->error;
+			}
 
 			$firstEscaped = $this->mysqli->real_escape_string($firstName);
 			$lastEscaped = $this->mysqli->real_escape_string($lastName);
