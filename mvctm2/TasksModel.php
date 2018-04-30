@@ -3,7 +3,7 @@
 	class TasksModel {
 		private $error = '';
 		private $mysqli;
-		private $orderBy = 'title';
+		private $orderBy = 'firstName';
 		private $orderDirection = 'asc';
 
 		public function __construct() {
@@ -69,7 +69,7 @@
 
 			$orderByEscaped = $this->mysqli->real_escape_string($this->orderBy);
 			$orderDirectionEscaped = $this->mysqli->real_escape_string($this->orderDirection);
-			$sql = "SELECT * FROM tasks ORDER BY $orderByEscaped $orderDirectionEscaped";
+			$sql = "SELECT * FROM client ORDER BY $orderByEscaped $orderDirectionEscaped";
 			if ($result = $this->mysqli->query($sql)) {
 				if ($result->num_rows > 0) {
 					while($row = $result->fetch_assoc()) {
@@ -100,7 +100,7 @@
 
 			$idEscaped = $this->mysqli->real_escape_string($id);
 
-			$sql = "SELECT * FROM tasks WHERE id = '$idEscaped'";
+			$sql = "SELECT * FROM client WHERE id = '$idEscaped'";
 			if ($result = $this->mysqli->query($sql)) {
 				if ($result->num_rows > 0) {
 					$task = $result->fetch_assoc();
@@ -150,26 +150,26 @@
 			return $this->error;
 		}
 
-		public function updateTaskCompletionStatus($id, $status) {
-			$this->error = "";
-
-			$completedDate = 'null';
-			if ($status == 'completed') {
-				$completedDate = 'NOW()';
-			}
-
-			if (!$id) {
-				$this->error = "No task was specified to change completion status.";
-			} else {
-				$idEscaped = $this->mysqli->real_escape_string($id);
-				$sql = "UPDATE tasks SET completedDate = $completedDate WHERE id = '$idEscaped'";
-				if (! $result = $this->mysqli->query($sql) ) {
-					$this->error = $this->mysqli->error;
-				}
-			}
-
-			return $this->error;
-		}
+		// public function updateTaskCompletionStatus($id, $status) {
+// 			$this->error = "";
+// 
+// 			$completedDate = 'null';
+// 			if ($status == 'completed') {
+// 				$completedDate = 'NOW()';
+// 			}
+// 
+// 			if (!$id) {
+// 				$this->error = "No task was specified to change completion status.";
+// 			} else {
+// 				$idEscaped = $this->mysqli->real_escape_string($id);
+// 				$sql = "UPDATE tasks SET completedDate = $completedDate WHERE id = '$idEscaped'";
+// 				if (! $result = $this->mysqli->query($sql) ) {
+// 					$this->error = $this->mysqli->error;
+// 				}
+// 			}
+// 
+// 			return $this->error;
+// 		}
 
 		public function updateTask($data) {
 			$this->error = '';
