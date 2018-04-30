@@ -116,9 +116,9 @@
 		public function addTask($data) {
 			$this->error = '';
 			
-			$title = $data['title'];
-			$category = $data['category'];
-			$description = $data['description'];
+			$title = $data['firstName'];
+			$category = $data['lastName'];
+			$description = $data['email'];
 			
 			if (! $title) {
 				$this->error = "No title found for task to add. A title is required.";
@@ -129,9 +129,9 @@
 				$category = 'uncategorized';
 			}
 			
-			$titleEscaped = $this->mysqli->real_escape_string($title);		
-			$categoryEscaped = $this->mysqli->real_escape_string($category);
-			$descriptionEscaped = $this->mysqli->real_escape_string($description);
+			$titleEscaped = $this->mysqli->real_escape_string($firstName);		
+			$categoryEscaped = $this->mysqli->real_escape_string($lastName);
+			$descriptionEscaped = $this->mysqli->real_escape_string($email);
 	
 			$sql = "INSERT INTO tasks (title, description, category, addDate) VALUES ('$titleEscaped', '$descriptionEscaped', '$categoryEscaped', NOW())";
 	
@@ -177,14 +177,14 @@
 				return $this->error;			
 			}
 			
-			$title = $data['title'];
+			$title = $data['firstName'];
 			if (! $title) {
 				$this->error = "No title found for task to update. A title is required.";
 				return $this->error;			
 			}		
 			
-			$description = $data['description'];
-			$category = $data['category'];
+			$description = $data['email'];
+			$category = $data['lastName'];
 			
 			$idEscaped = $this->mysqli->real_escape_string($id);
 			$titleEscaped = $this->mysqli->real_escape_string($title);
