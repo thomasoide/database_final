@@ -120,8 +120,8 @@
 			$lastName = $data['lastName'];
 			$email= $data['email'];
 
-			if (! $firstName && ! $lastName && ! $email) {
-				$this->error = "No first name given. Please enter your first name.";
+			if (! $lastName || ! $email) {
+				$this->error = "Error.";
 				return $this->error;
 			}
 
