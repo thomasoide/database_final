@@ -31,7 +31,7 @@
 				exit;
 			}
 
-			$this->processOrderBy();
+			// $this->processOrderBy();
 
 			switch($this->action) {
 				case 'delete':
