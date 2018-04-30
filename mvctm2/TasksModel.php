@@ -129,9 +129,9 @@
 				$category = 'uncategorized';
 			}
 			
-			$titleEscaped = $this->mysqli->real_escape_string($firstName);		
-			$categoryEscaped = $this->mysqli->real_escape_string($lastName);
-			$descriptionEscaped = $this->mysqli->real_escape_string($email);
+			$titleEscaped = $this->mysqli->real_escape_string($title);		
+			$categoryEscaped = $this->mysqli->real_escape_string($category);
+			$descriptionEscaped = $this->mysqli->real_escape_string($description);
 	
 			$sql = "INSERT INTO tasks (title, description, category, addDate) VALUES ('$titleEscaped', '$descriptionEscaped', '$categoryEscaped', NOW())";
 	
