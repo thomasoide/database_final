@@ -52,24 +52,15 @@
 
 			foreach ($tasks as $task) {
 				$id = $task['id'];
-				$addDate = $task['addDate'];
-				$completedDate = ($task['completedDate']) ? $task['completedDate'] : '';
-				$title = $task['title'];
-				$description = ($task['description']) ? $task['description'] : '';
-				$category = $task['category'];
-
-				$completedAction = 'set_completed';
-				$completedLabel = 'not completed';
-				if ($completedDate) {
-					$completedAction = 'set_not_completed';
-					$completedLabel = 'completed';
-				}
+				$addDate = $task['email'];
+				$completedDate = ($task['accountType']) ? $task['accountType'] : '';
+				$description = ($task['rating']) ? $task['rating'] : '';
+				$category = $task['balance'];
 
 				$body .= "<tr>";
 				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='delete' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Delete'></form></td>";
 				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='edit' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Edit'></form></td>";
-				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='$completedAction' /><input type='hidden' name='id' value='$id' /><input type='submit' value='$completedLabel'></form></td>";
-				$body .= "<td>$addDate</td><td>$completedDate</td><td>$title</td><td>$description</td><td>$category</td>";
+				$body .= "<td>$addDate</td><td>$completedDate</td><td>$description</td><td>$category</td>";
 				$body .= "</tr>\n";
 			}
 			$body .= "</table>\n";
@@ -81,14 +72,10 @@
 			$category = '';
 			$title = '';
 			$description = '';
-			$selected = array('personal' => '', 'school' => '', 'work' => '', 'uncategorized' => '');
 			if ($data) {
-				$category = $data['category'] ? $data['category'] : 'uncategorized';
-				$title = $data['title'];
-				$description = $data['description'];
-				$selected[$category] = 'selected';
-			} else {
-				$selected['uncategorized'] = 'selected';
+				$category = $data['balance'];
+				$title = $data['email'];
+				$description = $data['rating'];
 			}
 
 			$html = <<<EOT1
@@ -116,13 +103,8 @@ EOT1;
 			}
 
 			$html .= <<<EOT2
-  <p>Category<br />
-  <select name="category">
-	  <option value="personal" {$selected['personal']}>personal</option>
-	  <option value="school" {$selected['school']}>school</option>
-	  <option value="work" {$selected['work']}>work</option>
-	  <option value="uncategorized" {$selected['uncategorized']}>uncategorized</option>
-  </select>
+  <p>Balance<br />
+  	<input type="text" name="title" value="$category" placeholder="title" maxlength="255" size="80"></p>
   </p>
 
   <p>Title<br />
