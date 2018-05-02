@@ -21,8 +21,8 @@
 
 			$body .= "<p><a class='taskButton' href='index.php?view=accountform'>+ Add Account</a></p>\n"
 
-			if (count($data->accounts < 1)) {
-				$body .= "<p>No tasks to display!</p>\n";
+			if (count($accounts->accounts < 1)) {
+				$body .= "<p>No accounts to display!</p>\n";
 				return $body;
 			}
 
