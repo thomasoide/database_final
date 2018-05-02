@@ -236,6 +236,129 @@
 			return $this->error;
 		}
 
+		public function getAccounts() {
+			$this->error = '';
+			$tasks = array();
+
+			if (! $this->mysqli) {
+				$this->error = "No connection to database.";
+				return array($tasks, $this->error);
+			}
+
+			$orderByEscaped = $this->mysqli->real_escape_string($this->orderBy);
+			$orderDirectionEscaped = $this->mysqli->real_escape_string($this->orderDirection);
+			$sql = "SELECT client.firstName, client.lastName, accounts.balance, accounts.rating, accounts.accountType, client.id FROM accounts INNER JOIN clients ON accounts.clientID = clients.id";
+			if ($result = $this->mysqli->query($sql)) {
+				if ($result->num_rows > 0) {
+					while($row = $result->fetch_assoc()) {
+						array_push($tasks, $row);
+					}
+				}
+				$result->close();
+			} else {
+				$this->error = $mysqli->error;
+			}
+
+			return array($tasks, $this->error);
+		}
+
+		public function getAccount($id) {
+			$this->error = '';
+			$task = null;
+
+			if (! $this->mysqli) {
+				$this->error = "No connection to database.";
+				return array($task, $this->error);
+			}
+
+			if (! $id) {
+				$this->error = "No account ID specified.";
+				return array($task, $this->error);
+			}
+
+			$idEscaped = $this->mysqli->real_escape_string($id);
+
+			$sql = "SELECT * FROM accounts WHERE id = '$idEscaped'";
+			if ($result = $this->mysqli->query($sql)) {
+				if ($result->num_rows > 0) {
+					$task = $result->fetch_assoc();
+				}
+				$result->close();
+			} else {
+				$this->error = $this->mysqli->error;
+			}
+
+			return array($task, $this->error);
+		}
+
+		public function addAccount($data) {
+			$this->error = '';
+
+			$balance = $data['balance'];
+			$type = $data['accountType'];
+			$clientID = $data['client.id'];
+
+			if (! $balance ) {
+				$this->error = "No balance given. Please enter an account balance.";
+				return $this->error;
+			}
+
+			if (! $accountType ) {
+				$this->error = "No type given. Please enter an account type.";
+				return $this->error;
+			}
+
+			$typeEscaped = $this->mysqli->real_escape_string($type);
+			$clientIDescaped = $this->mysqli->real_escape_string($clientID);
+
+			if ($balance < 1000) {
+				$rating = 'F';
+			}
+			else if ($balance > 1000 && $balance < 5000) {
+				$rating = 'D';
+			}
+			else if ($balance > 5000 && $balance < 10000) {
+				$rating = 'C';
+			}
+			else if ($balance > 10000 && $balance < 20000) {
+				$rating = 'B';
+			}
+			else if ($balance > 20000) {
+				$rating = 'A';
+			}
+
+			$sql = "INSERT INTO accounts (balance, accountType, rating, clientID) VALUES ('$balance', '$typeEscaped', '$rating', '$clientIDescaped')";
+
+			if (! $result = $this->mysqli->query($sql)) {
+				$this->error = $this->mysqli->error;
+			}
+
+			return $this->error;
+
+		}
+
+		public function deleteAccount($id) {
+			$this->error = '';
+
+			if (! $this->mysqli) {
+				$this->error = "No connection to database.";
+				return $this->error;
+			}
+
+			if (! $id) {
+				$this->error = "No id specified for account to delete.";
+				return $this->error;
+			}
+
+			$idEscaped = $this->mysqli->real_escape_string($id);
+			$sql = "DELETE FROM accounts WHERE id = $idEscaped";
+			if (! $result = $this->mysqli->query($sql) ) {
+				$this->error = $this->mysqli->error;
+			}
+
+			return $this->error;
+		}
+
 
 	}
 

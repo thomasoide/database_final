@@ -31,18 +31,10 @@
 				exit;
 			}
 
-			// $this->processOrderBy();
-
 			switch($this->action) {
 				case 'delete':
 					$this->handleDelete();
 					break;
-				// case 'set_completed':
-				// 	$this->handleSetCompletionStatus('completed');
-				// 	break;
-				// case 'set_not_completed':
-				// 	$this->handleSetCompletionStatus('not completed');
-				// 	break;
 				case 'add':
 					$this->handleAddTask();
 					break;
@@ -52,10 +44,28 @@
 				case 'update':
 					$this->handleUpdateTask();
 					break;
-
+				case 'addAccount':
+					$this->handleAddAccount();
+					break;
+				case 'updateAccount':
+					$this->handleUpdateAccount();
+					break;
+				case 'deleteAccount':
+					$this->handleDeleteAccount();
+					break;
 			}
 
 			switch($this->view) {
+				case 'accountlist':
+					list($accounts, $error) = $this->model->getAccounts();
+					if ($error) {
+						$this->message = $error;
+					}
+					print $this->views->accountListView($accounts, $this->message);
+					break;
+				case 'accountform':
+					print $this->views->accountFormView($this->data, $this->message);
+					break;
 				case 'taskform':
 					print $this->views->taskFormView($this->data, $this->message);
 					break;
@@ -83,12 +93,12 @@
 			$this->view = 'tasklist';
 		}
 
-		private function handleSetCompletionStatus($status) {
-			if ($error = $this->model->updateTaskCompletionStatus($_POST['id'], $status)) {
-				$this->message = $error;
-			}
-			$this->view = 'tasklist';
-		}
+		// private function handleSetCompletionStatus($status) {
+		// 	if ($error = $this->model->updateTaskCompletionStatus($_POST['id'], $status)) {
+		// 		$this->message = $error;
+		// 	}
+		// 	$this->view = 'tasklist';
+		// }
 
 		private function handleAddTask() {
 			if ($_POST['cancel']) {
@@ -131,7 +141,44 @@
 			$this->view = 'tasklist';
 		}
 
+		private function handleAddAccount() {
+			if ($_POST['cancel']) {
+				$this->view = 'accountlist';
+				return;
+			}
+
+			$error = $this->model->addTask($_POST);
+			if ($error) {
+				$this->message = $error;
+				$this->view = 'accountform';
+				$this->data = $_POST;
+			}
+		}
+
+		private function handleUpdateAccount() {
+			if ($_POST['cancel']) {
+				$this->view = 'accountlist';
+				return;
+			}
+
+			if ($error = $this->model->updateAccount($_POST)) {
+				$this->message = $error;
+				$this->view = 'accountform';
+				$this->data = $_POST;
+				return;
+			}
+
+			$this->view = 'accountlist';
+		}
+
+		private function handleDeleteAccount() {
+			if ($error = $this->model->deleteAccount($_POST['id'])) {
+				$this->message = $error;
+			}
+			$this->view = 'accountlist';
+		}
 	}
+
 
 
 ?>
