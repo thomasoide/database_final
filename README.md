@@ -53,7 +53,7 @@ The user can delete both client and account information.
 
 ## Video Demonstration
 
-NEED TO ADD THIS
+https://www.youtube.com/watch?v=zFlh3L_3E0g&feature=youtu.be
 
 ## URL
 
