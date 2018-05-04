@@ -125,6 +125,8 @@ EOT1;
 		<option value="Investment" {$selected['Investment']}>Investment</option>
 		<option value="Insurance" {$selected['Insurance']}>Insurance</option>
 	</select>
+	
+	<input type="number" name="clientID" value"" placeholder="Enter Client ID">
 
 	<input type="submit" name='submit' value="Submit"> <input type="submit" name='cancel' value="Cancel">
 </form>

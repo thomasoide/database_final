@@ -279,7 +279,7 @@
 				return $this->error;
 			}
 
-			if (! $accountType ) {
+			if (! $type ) {
 				$this->error = "No type given. Please enter an account type.";
 				return $this->error;
 			}
