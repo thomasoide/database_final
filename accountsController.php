@@ -42,7 +42,7 @@
 					$this->handleEditClient();
 					break;
 				case 'update':
-					$this->handleUpdateTask();
+					$this->handleUpdateClient();
 					break;
 				case 'addAccount':
 					$this->handleAddAccount();

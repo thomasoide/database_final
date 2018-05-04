@@ -15,14 +15,14 @@
 		public function accountListView($client, $accounts, $message = '') {
 			$firstName = $client['firstName'];
 			$lastName = $client['lastName'];
-			$body = "<a href='index.php'>View Clients</a>";
+			$body = "<a class='back' href='index.php'>Back to Clients</a>";
 			$body .= "<h1>Accounts: $firstName $lastName</h1>\n";
 
 			if ($message) {
 				$body .= "<p class='message'>$message</p>\n";
 			}
 
-			$body .= "<p><a class='taskButton' href='index.php?view=accountform'>+ Add Account</a></p>\n";
+			$body .= "<p><a  class='btn btn-primary' href='index.php?view=accountform'>+ Add Account</a></p>\n";
 
 			if (count($accounts) < 1) {
 				// echo "$accounts";
@@ -30,7 +30,7 @@
 				return $this->page($body);
 			}
 
-			$body .= "<table>\n";
+			$body .= "<table class='table table-striped'>\n";
 			$body .= "<tr><th>delete</th><th>edit</th>";
 
 			$columns = array(array('name' => 'clientID', label => 'Client ID'),
@@ -42,7 +42,7 @@
 			foreach ($columns as $column) {
 				$name = $column['name'];
 				$label = $column['label'];
-				$body .= "<th><a class='order'>$label</a></th>";
+				$body .= "<th>$label</th>";
 			}
 
 			for ($row = 0; $row < count($accounts); $row++){
@@ -54,8 +54,8 @@
 				$type = $accounts[$row]['accountType'];
 
 				$body .= "<tr>";
-				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='deleteAccount' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Delete'></form></td>";
-				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='editAccount' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Edit'></form></td>";
+				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='deleteAccount' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Delete' class='btn btn-secondary'></form></td>";
+				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='editAccount' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Edit' class='btn btn-secondary'></form></td>";
 				$body .= "<td>$clientID</td><td>$id</td><td>$balance</td><td>$rating</td><td>$type</td>";
 				$body .= "</tr>\n";
 			}
@@ -93,10 +93,11 @@
 <html>
 <head>
 <title>Account</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" href="accounts.css">
 </head>
 <body>
-<h1>You are accessing an account for $firstName $lastName</h1>
+<h1>Edit/Add Account</h1>
 EOT1;
 
 			if ($message) {
@@ -128,7 +129,7 @@ EOT1;
 
 	<input type="number" name="clientID" value"" placeholder="Enter Client ID">
 
-	<input type="submit" name='submit' value="Submit"> <input type="submit" name='cancel' value="Cancel">
+	<input type="submit" name='submit' value="Submit" class='btn btn-secondary'> <input type="submit" name='cancel' value="Cancel" class='btn btn-secondary'>
 </form>
 </body>
 </html>
@@ -144,14 +145,14 @@ EOT2;
 				$body .= "<p class='message'>$message</p>\n";
 			}
 
-			$body .= "<p><a class='taskButton' href='index.php?view=clientform'>+ Add Client</a></p>\n";
+			$body .= "<p><a class='btn btn-primary' href='index.php?view=clientform'>+ Add Client</a></p>\n";
 
 			if (count($clients) < 1) {
 				$body .= "<p>No tasks to display!</p>\n";
 				return $body;
 			}
 
-			$body .= "<table>\n";
+			$body .= "<table class='table table-striped'>\n";
 			$body .= "<tr><th>Delete</th><th>Edit</th><th>Accounts</th>";
 
 			$columns = array(
@@ -165,7 +166,7 @@ EOT2;
 			foreach ($columns as $column) {
 				$name = $column['name'];
 				$label = $column['label'];
-				$body .= "<th><a class='order'>$label</a></th>";
+				$body .= "<th>$label</th>";
 			}
 
 			foreach ($clients as $client) {
@@ -176,9 +177,9 @@ EOT2;
 				$clientSince = $client['clientSince'];
 
 				$body .= "<tr>";
-				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='delete' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Delete'></form></td>";
-				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='edit' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Edit'></form></td>";
-				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='viewAccounts' /><input type='hidden' name='id' value='$id' /><input type='submit' value='View Accounts'></form></td>";
+				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='delete' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Delete' class='btn btn-secondary'></form></td>";
+				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='edit' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Edit' class='btn btn-secondary' ></form></td>";
+				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='viewAccounts' /><input type='hidden' name='id' value='$id' /><input type='submit' value='View Accounts' class='btn btn-secondary'></form></td>";
 				$body .= "<td>$firstName</td><td>$lastName</td><td>$email</td>";
 				$body .= "</tr>\n";
 			}
@@ -202,6 +203,7 @@ EOT2;
 <html>
 <head>
 <title>Add a client</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" href="accounts.css">
 </head>
 <body>
@@ -224,7 +226,7 @@ EOT1;
 
 			$html .= <<<EOT2
   <p>First Name<br />
-  	<input type="text" name="firstName" value="$firstName" placeholder="First Name" maxlength="255" size="80"></p>
+  	<input type="text" name="firstName" value="$firstName" placeholder="First Name" maxlength="255" size="80" ></p>
   </p>
 
   <p>Last Name<br />
@@ -233,7 +235,7 @@ EOT1;
 	<p>Email<br />
   <input type="text" name="email" value="$email" placeholder="Email" maxlength="255" size="80"></p>
 
-  <input type="submit" name='submit' value="Submit"> <input type="submit" name='cancel' value="Cancel">
+  <input type="submit" name='submit' value="Submit" class='btn btn-secondary'> <input type="submit" name='cancel' value="Cancel" class='btn btn-secondary'>
 </form>
 </body>
 </html>
@@ -255,6 +257,7 @@ EOT2;
 <html>
 <head>
 <title>{$this->pageTitle}</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" href="{$this->stylesheet}">
 </head>
 <body>
