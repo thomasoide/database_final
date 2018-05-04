@@ -86,7 +86,7 @@
 			if ($error = $this->model->deleteClient($_POST['id'])) {
 				$this->message = $error;
 			}
-			$this->view = 'tasklist';
+			$this->view = 'clientlist';
 		}
 
 		private function handleAddClient() {
@@ -143,7 +143,7 @@
 
 		private function handleAddAccount() {
 			if ($_POST['cancel']) {
-				$this->view = 'accountlist';
+				$this->view = 'clientlist';
 				return;
 			}
 
@@ -207,7 +207,7 @@
 			list($client, $error) = $this->model->getClient($account['clientID']);
 			$this->client = $client;
 			$this->data = $accounts;
-			$this->view = 'accountlist';
+			$this->view = 'clientlist';
 		}
 	}
 
