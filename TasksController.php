@@ -11,6 +11,7 @@
 		private $action = '';
 		private $message = '';
 		private $data = array();
+		private $client = array();
 
 		public function __construct() {
 			$this->model = new TasksModel();
@@ -31,25 +32,10 @@
 				exit;
 			}
 
-			// Note: given order of handling and given processOrderBy doesn't require user to be logged in
-			//...orderBy can be changed without being logged in
-			$this->processOrderBy();
-
-			$this->processLogout();
-
 			switch($this->action) {
-				case 'login':
-					$this->handleLogin();
-					break;
 				case 'delete':
 					$this->handleDelete();
 					break;
-				// case 'set_completed':
-				// 	$this->handleSetCompletionStatus('completed');
-				// 	break;
-				// case 'set_not_completed':
-				// 	$this->handleSetCompletionStatus('not completed');
-				// 	break;
 				case 'add':
 					$this->handleAddTask();
 					break;
@@ -59,66 +45,45 @@
 				case 'update':
 					$this->handleUpdateTask();
 					break;
-				default:
-					$this->verifyLogin();
+				case 'addAccount':
+					$this->handleAddAccount();
+					break;
+				case 'editAccount':
+					$this->handleEditAccount();
+					break;
+				case 'updateAccount':
+					$this->handleUpdateAccount();
+					break;
+				case 'deleteAccount':
+					$this->handleDeleteAccount();
+					break;
+				case 'viewAccounts':
+					$this->viewAccounts();
+					break;
 			}
 
 			switch($this->view) {
-				case 'loginform':
-					print $this->views->loginFormView($this->data, $this->message);
+				case 'accountlist':
+					print $this->views->accountListView($this->client, $this->data, $this->message);
+					break;
+				case 'accountform':
+					// echo '<pre>', var_dump($this->client), '</pre>';
+					print $this->views->accountFormView($this->client, $this->data, $this->message);
 					break;
 				case 'taskform':
-					print $this->views->accountView($this->model->getUser(), $this->data, $this->message);
+					print $this->views->taskFormView($this->data, $this->message);
 					break;
 				default: // 'tasklist'
-					list($orderBy, $orderDirection) = $this->model->getOrdering();
 					list($tasks, $error) = $this->model->getTasks();
 					if ($error) {
 						$this->message = $error;
 					}
-					print $this->views->accountView($this->model->getUser(), $tasks, $orderBy, $orderDirection, $this->message);
+					print $this->views->taskListView($tasks, $this->message);
 			}
 
-		}
-
-		private function verifyLogin() {
-			if (! $this->model->getUser()) {
-				$this->view = 'loginform';
-				return false;
-			} else {
-				return true;
-			}
-		}
-
-		private function processOrderby() {
-			if ($_GET['orderby']) {
-				$this->model->toggleOrder($_GET['orderby']);
-			}
-		}
-
-		private function processLogout() {
-			if ($_GET['logout']) {
-				$this->model->logout();
-			}
-		}
-
-		private function handleLogin() {
-			$loginID = $_POST['loginid'];
-			$password = $_POST['password'];
-
-			list($success, $message) = $this->model->login($loginID, $password);
-			if ($success) {
-				$this->view = 'tasklist';
-			} else {
-				$this->message = $message;
-				$this->view = 'loginform';
-				$this->data = $_POST;
-			}
 		}
 
 		private function handleDelete() {
-			if (!$this->verifyLogin()) return;
-
 			if ($error = $this->model->deleteTask($_POST['id'])) {
 				$this->message = $error;
 			}
@@ -126,8 +91,6 @@
 		}
 
 		private function handleAddTask() {
-			if (!$this->verifyLogin()) return;
-
 			if ($_POST['cancel']) {
 				$this->view = 'tasklist';
 				return;
@@ -142,8 +105,6 @@
 		}
 
 		private function handleEditTask() {
-			if (!$this->verifyLogin()) return;
-
 			list($task, $error) = $this->model->getTask($_POST['id']);
 			if ($error) {
 				$this->message = $error;
@@ -155,8 +116,6 @@
 		}
 
 		private function handleUpdateTask() {
-			if (!$this->verifyLogin()) return;
-
 			if ($_POST['cancel']) {
 				$this->view = 'tasklist';
 				return;
@@ -171,5 +130,86 @@
 
 			$this->view = 'tasklist';
 		}
+
+		private function viewAccounts() {
+			list($accounts, $error) = $this->model->getAccounts($_POST['id']);
+			list($client, $error) = $this->model->getTask($_POST['id']);
+			if ($error) {
+				$this->message = $error;
+			}
+			$this->client = $client;
+			$this->data = $accounts;
+			$this->view = 'accountlist';
+		}
+
+		private function handleAddAccount() {
+			if ($_POST['cancel']) {
+				$this->view = 'accountlist';
+				return;
+			}
+
+			$error = $this->model->addAccount($_POST);
+
+			if ($error) {
+				$this->client = $client;
+				$this->message = $error;
+				$this->data = $_POST;
+				$this->view = 'accountform';
+			}
+		}
+
+		private function handleEditAccount() {
+			list($account, $error) = $this->model->getAccount($_POST['id']);
+			list($client, $error) = $this->model->getTask($account['clientID']);
+			if ($error) {
+				$this->message = $error;
+				$this->view = 'accountlist';
+				return;
+			}
+			$this->client = $client;
+			$this->data = $account;
+			$this->view = 'accountform';
+		}
+
+		private function handleUpdateAccount() {
+			if ($_POST['cancel']) {
+				$this->view = 'accountlist';
+				return;
+			}
+
+			$message = $this->model->updateAccount($_POST);
+
+			if (is_numeric($message) == False) {
+				$this->message = $message;
+				$this->view = 'accountform';
+				$this->data = $_POST;
+				return;
+			}
+			else {
+				list($account, $error) = $this->model->getAccount((int)$message);
+				list($accounts, $error) = $this->model->getAccounts($account['clientID']);
+				list($client, $error) = $this->model->getTask($account['clientID']);
+				$this->client = $client;
+				$this->data = $accounts;
+				$this->view = 'accountlist';
+			}
+		}
+
+		private function handleDeleteAccount() {
+
+			$message = $this->model->deleteAccount($_POST['id']);
+
+			if (is_numeric($message) == False) {
+				$this->message = $message;
+			}
+
+			list($account, $error) = $this->model->getAccount((int)$message);
+			list($accounts, $error) = $this->model->getAccounts($account['clientID']);
+			list($client, $error) = $this->model->getTask($account['clientID']);
+			$this->client = $client;
+			$this->data = $accounts;
+			$this->view = 'accountlist';
+		}
 	}
+
 ?>

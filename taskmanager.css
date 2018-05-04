@@ -34,6 +34,15 @@ a.taskButton:hover {
 	background-color: #5cd;
 }
 
+.backLink {
+	text-decoration: none;
+	color: black;
+}
+
+.backLink:hover {
+	text-decoration: underline;
+}
+
 form {
 	background-color: #6de;
 	border: 1px solid #4bc;

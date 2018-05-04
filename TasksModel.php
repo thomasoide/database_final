@@ -1,24 +1,15 @@
 <?php
 
-	// NOTE: this version has beginning of support for logging in and supporting
-	// multiple users.  This version does not yet have the database table for users
-	// or the change to the database so that each task is affiliated with a user.
-
-	require('User.php');
-
 	class TasksModel {
 		private $error = '';
 		private $mysqli;
-		private $orderBy = 'title';
+		// private $orderBy = 'firstName';
 		private $orderDirection = 'asc';
-		private $user;
 
 		public function __construct() {
 			session_start();
 			$this->initDatabaseConnection();
-			echo "<p>Connection established</p>";
-			//$this->restoreOrdering();
-			//$this->restoreUser();
+			// $this->restoreOrdering();
 		}
 
 		public function __destruct() {
@@ -39,77 +30,9 @@
 			}
 		}
 
-		private function restoreOrdering() {
-			$this->orderBy = $_SESSION['orderby'] ? $_SESSION['orderby'] : $this->orderBy;
-			$this->orderDirection = $_SESSION['orderdirection'] ? $_SESSION['orderdirection'] : $this->orderDirection;
-
-			$_SESSION['orderby'] = $this->orderBy;
-			$_SESSION['orderdirection'] = $this->orderDirection;
-		}
-
-		private function restoreUser() {
-			if ($loginID = $_SESSION['loginid']) {
-				$this->user = new User();
-				if (!$this->user->load($loginID, $this->mysqli)) {
-					$this->user = null;
-				}
-			}
-		}
-
-		public function getUser() {
-			return $this->user;
-		}
-
-		public function login($loginID, $password) {
-			// check if loginID and password are valid by comparing
-			// encrypted version of password to encrypted password stored
-			// in database for user with loginID
-
-			$user = new User();
-			if ($user->load($loginID, $this->mysqli) && password_verify($password, $user->hashedPassword)) {
-				$this->user = $user;
-				$_SESSION['loginid'] = $loginID;
-				return array(true, "");
-			} else {
-				$this->user = null;
-				$_SESSION['loginid'] = '';
-				return array(false, "Invalid login information.  Please try again.");
-			}
-		}
-
-		public function logout() {
-			$this->user = null;
-			$_SESSION['loginid'] = '';
-		}
-
-		public function toggleOrder($orderBy) {
-			if ($this->orderBy == $orderBy)	{
-				if ($this->orderDirection == 'asc') {
-					$this->orderDirection = 'desc';
-				} else {
-					$this->orderDirection = 'asc';
-				}
-			} else {
-				$this->orderDirection = 'asc';
-			}
-			$this->orderBy = $orderBy;
-
-			$_SESSION['orderby'] = $this->orderBy;
-			$_SESSION['orderdirection'] = $this->orderDirection;
-		}
-
-		public function getOrdering() {
-			return array($this->orderBy, $this->orderDirection);
-		}
-
 		public function getTasks() {
 			$this->error = '';
 			$tasks = array();
-
-			if (!$this->user) {
-				$this->error = "User not specified. Unable to get task.";
-				return $this->error;
-			}
 
 			if (! $this->mysqli) {
 				$this->error = "No connection to database.";
@@ -118,12 +41,11 @@
 
 			$orderByEscaped = $this->mysqli->real_escape_string($this->orderBy);
 			$orderDirectionEscaped = $this->mysqli->real_escape_string($this->orderDirection);
-			$userIDEscaped = $this->mysqli->real_escape_string($this->user->userID);
-
-			$sql = "SELECT * FROM tasks WHERE userID = $userIDEscaped ORDER BY $orderByEscaped $orderDirectionEscaped";
+			$sql = "SELECT * FROM client /*ORDER BY $orderByEscaped $orderDirectionEscaped*/";
 			if ($result = $this->mysqli->query($sql)) {
 				if ($result->num_rows > 0) {
 					while($row = $result->fetch_assoc()) {
+						// print $row['firstName'];
 						array_push($tasks, $row);
 					}
 				}
@@ -139,11 +61,6 @@
 			$this->error = '';
 			$task = null;
 
-			if (!$this->user) {
-				$this->error = "User not specified. Unable to get task.";
-				return $this->error;
-			}
-
 			if (! $this->mysqli) {
 				$this->error = "No connection to database.";
 				return array($task, $this->error);
@@ -155,9 +72,8 @@
 			}
 
 			$idEscaped = $this->mysqli->real_escape_string($id);
-			$userIDEscaped = $this->mysqli->real_escape_string($this->user->userID);
 
-			$sql = "SELECT * FROM tasks WHERE userID = $userIDEscaped AND id = '$idEscaped'";
+			$sql = "SELECT * FROM client WHERE id = '$idEscaped'";
 			if ($result = $this->mysqli->query($sql)) {
 				if ($result->num_rows > 0) {
 					$task = $result->fetch_assoc();
@@ -173,36 +89,30 @@
 		public function addTask($data) {
 			$this->error = '';
 
-			if (!$this->user) {
-				$this->error = "User not specified. Unable to add task.";
-				return $this->error;
-			}
-
 			$firstName = $data['firstName'];
 			$lastName = $data['lastName'];
-			$email = $data['email'];
+			$email= $data['email'];
 
-			if (! $firstName) {
-				$this->error = "No firstName found. A first name is required.";
+			if (! $firstName ) {
+				$this->error = "No first name given. Please enter your first name.";
 				return $this->error;
 			}
 
-			if (! $lastName) {
-				$this->error = "No last name found. A last name is required.";
+			if (! $lastName ) {
+				$this->error = "No last name given. Please enter your first name.";
 				return $this->error;
 			}
 
 			if (! $email) {
-				$this->error = "No email found. An email is required.";
+				$this->error = 'No email given. Please enter your email.';
 				return $this->error;
 			}
 
-			$firstEscaped = $this->mysqli->real_escape_string($title);
-			$lastEscaped = $this->mysqli->real_escape_string($category);
-			$emailEscaped = $this->mysqli->real_escape_string($description);
-			//$userIDEscaped = $this->mysqli->real_escape_string($this->user->userID);
+			$firstEscaped = $this->mysqli->real_escape_string($firstName);
+			$lastEscaped = $this->mysqli->real_escape_string($lastName);
+			$emailEscaped = $this->mysqli->real_escape_string($email);
 
-			$sql = "INSERT INTO client (firstName, lastName, email) VALUES ('$firstEscaped', '$lastEscaped', '$emailEscaped')";
+			$sql = "INSERT INTO client (firstName, email, lastName) VALUES ('$firstEscaped', '$emailEscaped', '$lastEscaped')";
 
 			if (! $result = $this->mysqli->query($sql)) {
 				$this->error = $this->mysqli->error;
@@ -211,43 +121,32 @@
 			return $this->error;
 		}
 
-		/*public function updateTaskCompletionStatus($id, $status) {
-			$this->error = "";
+		// public function updateTaskCompletionStatus($id, $status) {
+// 			$this->error = "";
+//
+// 			$completedDate = 'null';
+// 			if ($status == 'completed') {
+// 				$completedDate = 'NOW()';
+// 			}
+//
+// 			if (!$id) {
+// 				$this->error = "No task was specified to change completion status.";
+// 			} else {
+// 				$idEscaped = $this->mysqli->real_escape_string($id);
+// 				$sql = "UPDATE tasks SET completedDate = $completedDate WHERE id = '$idEscaped'";
+// 				if (! $result = $this->mysqli->query($sql) ) {
+// 					$this->error = $this->mysqli->error;
+// 				}
+// 			}
+//
+// 			return $this->error;
+// 		}
 
-			if (!$this->user) {
-				$this->error = "User not specified. Unable to update task completion status.";
-				return $this->error;
-			}
-
-			$completedDate = 'null';
-			if ($status == 'completed') {
-				$completedDate = 'NOW()';
-			}
-
-			if (!$id) {
-				$this->error = "No task was specified to change completion status.";
-			} else {
-				$idEscaped = $this->mysqli->real_escape_string($id);
-				//$userIDEscaped = $this->mysqli->real_escape_string($this->user->userID);
-				$sql = "UPDATE tasks SET completedDate = $completedDate WHERE userID = $userIDEscaped AND id = '$idEscaped'";
-				if (! $result = $this->mysqli->query($sql) ) {
-					$this->error = $this->mysqli->error;
-				}
-			}
-
-			return $this->error;
-		}*/
-
-		/*public function updateTask($data) {
+		public function updateTask($data) {
 			$this->error = '';
 
-			if (!$this->user) {
-				$this->error = "User not specified. Unable to update task.";
-				return $this->error;
-			}
-
 			if (! $this->mysqli) {
-				$this->error = "No connection to database. Unable to update task.";
+				$this->error = "No connection to database.";
 				return $this->error;
 			}
 
@@ -257,38 +156,42 @@
 				return $this->error;
 			}
 
-			$title = $data['title'];
-			if (! $title) {
-				$this->error = "No title found for task to update. A title is required.";
+			$firstName = $data['firstName'];
+			$lastName = $data['lastName'];
+			$email= $data['email'];
+
+			if (! $firstName ) {
+				$this->error = "No first name given. Please enter your first name.";
 				return $this->error;
 			}
 
-			$description = $data['description'];
-			$category = $data['category'];
+			if (! $lastName ) {
+				$this->error = "No last name given. Please enter your first name.";
+				return $this->error;
+			}
+
+			if (! $email) {
+				$this->error = 'No email given. Please enter your email.';
+				return $this->error;
+			}
 
 			$idEscaped = $this->mysqli->real_escape_string($id);
-			$titleEscaped = $this->mysqli->real_escape_string($title);
-			$descriptionEscaped = $this->mysqli->real_escape_string($description);
-			$categoryEscaped = $this->mysqli->real_escape_string($category);
-			$userIDEscaped = $this->mysqli->real_escape_string($this->user->userID);
-			$sql = "UPDATE tasks SET title='$titleEscaped', description='$descriptionEscaped', category='$categoryEscaped' WHERE userID = $userIDEscaped AND id = $idEscaped";
+			$firstEscaped = $this->mysqli->real_escape_string($firstName);
+			$lastEscaped = $this->mysqli->real_escape_string($lastName);
+			$emailEscaped = $this->mysqli->real_escape_string($email);
+			$sql = "UPDATE client SET firstName='$firstEscaped', email='$emailEscaped', lastName='$lastEscaped' WHERE id = $idEscaped";
 			if (! $result = $this->mysqli->query($sql) ) {
 				$this->error = $this->mysqli->error;
 			}
 
 			return $this->error;
-		}*/
+		}
 
 		public function deleteTask($id) {
 			$this->error = '';
 
-			if (!$this->user) {
-				$this->error = "User not specified. Unable to delete task.";
-				return $this->error;
-			}
-
 			if (! $this->mysqli) {
-				$this->error = "No connection to database. Unable to delete task.";
+				$this->error = "No connection to database.";
 				return $this->error;
 			}
 
@@ -298,13 +201,200 @@
 			}
 
 			$idEscaped = $this->mysqli->real_escape_string($id);
-			$userIDEscaped = $this->mysqli->real_escape_string($this->user->userID);
-			$sql = "DELETE FROM tasks WHERE userID = $userIDEscaped AND id = $idEscaped";
+			$sql = "DELETE FROM client WHERE id = $idEscaped";
 			if (! $result = $this->mysqli->query($sql) ) {
 				$this->error = $this->mysqli->error;
 			}
 
 			return $this->error;
+		}
+
+		public function getAccounts($id) {
+			$this->error = '';
+			$accounts = array();
+
+			if (! $this->mysqli) {
+				$this->error = "No connection to database.";
+				return array($accounts, $this->error);
+			}
+
+			if (! $id) {
+				$this->error = "No ID specified";
+				return array($accounts, $this->error);
+			}
+
+			$sql = "SELECT accounts.id, firstName, lastName, balance, rating, accountType, clientID FROM accounts, client WHERE accounts.clientID = $id AND client.id = $id";
+			// $sql = "SELECT * FROM accounts WHERE clientID = ''$idEscaped'";
+			if ($result = $this->mysqli->query($sql)) {
+				if ($result->num_rows > 0) {
+					while ($row = $result->fetch_assoc()) {
+						array_push($accounts, $row);
+					}
+				}
+				$result->close();
+			} else {
+				$this->error = $mysqli->error;
+			}
+			return array($accounts, $this->error);
+		}
+
+		public function getAccount($id) {
+			$this->error = '';
+			$task = null;
+
+			if (! $this->mysqli) {
+				$this->error = "No connection to database.";
+				return array($task, $this->error);
+			}
+
+			if (! $id) {
+				$this->error = "No account ID specified.";
+				return array($task, $this->error);
+			}
+
+			$idEscaped = $this->mysqli->real_escape_string($id);
+
+			$sql = "SELECT * FROM accounts WHERE id = '$idEscaped'";
+			if ($result = $this->mysqli->query($sql)) {
+				if ($result->num_rows > 0) {
+					$account = $result->fetch_assoc();
+				}
+				$result->close();
+			} else {
+				$this->error = $this->mysqli->error;
+			}
+
+			return array($account, $this->error);
+		}
+
+		public function addAccount($data) {
+			$this->error = '';
+
+			$balance = $data['balance'];
+			$type = $data['accountType'];
+			$clientID = $data['id'];
+
+			if (! $balance ) {
+				$this->error = "No balance given. Please enter an account balance.";
+				return $this->error;
+			}
+
+			if (! $accountType ) {
+				$this->error = "No type given. Please enter an account type.";
+				return $this->error;
+			}
+
+			if ((int)$balance <= 1000) {
+				$rating = 'F';
+			}
+			else if ((int)$balance > 1000 && (int)$balance <= 5000) {
+				$rating = 'D';
+			}
+			else if ((int)$balance > 5000 && (int)$balance <= 10000) {
+				$rating = 'C';
+			}
+			else if ((int)$balance > 10000 && (int)$balance <= 20000) {
+				$rating = 'B';
+			}
+			else if ((int)$balance > 20000) {
+				$rating = 'A';
+			}
+
+			$balanceEscaped = $this->mysqli->real_escape_string($balance);
+			$typeEscaped = $this->mysqli->real_escape_string($type);
+			$ratingEscaped = $this->mysqli->real_escape_string($rating);
+			$sql = "INSERT INTO accounts (balance, accountType, rating, clientID) VALUES ('balanceEscaped', '$typeEscaped', '$ratingEscaped', '$clientID')";
+
+			if (! $result = $this->mysqli->query($sql)) {
+				$this->error = $this->mysqli->error;
+			}
+
+			return $this->error;
+
+		}
+
+		public function deleteAccount($id) {
+			$this->error = '';
+
+			if (! $this->mysqli) {
+				$this->error = "No connection to database.";
+				return $this->error;
+			}
+
+			if (! $id) {
+				$this->error = "No id specified for account to delete.";
+				return $this->error;
+			}
+
+			$idEscaped = $this->mysqli->real_escape_string($id);
+			$sql = "DELETE FROM accounts WHERE id = $idEscaped";
+			if (! $result = $this->mysqli->query($sql) ) {
+				$this->error = $this->mysqli->error;
+				return $this->error;
+			}
+			else {
+				return $idEscaped;
+			}
+		}
+
+		public function updateAccount($data) {
+			$this->error = '';
+
+			if (! $this->mysqli) {
+				$this->error = "No connection to database.";
+				return $this->error;
+			}
+
+			$id = $data['id'];
+			if (! $id) {
+				$this->error = "No id specified for account to update.";
+				return $this->error;
+			}
+
+			$balance = $data['balance'];
+			$type = $data['accountType'];
+			$rating = '';
+
+			if (! $balance ) {
+				$this->error = "No balance given. Please enter an account balance.";
+				return $this->error;
+			}
+
+			if (! $type ) {
+				$this->error = "No account type given. Please enter an account type.";
+				return $this->error;
+			}
+
+			if ((int)$balance <= 1000) {
+				$rating = 'F';
+			}
+			else if ((int)$balance > 1000 && (int)$balance <= 5000) {
+				$rating = 'D';
+			}
+			else if ((int)$balance > 5000 && (int)$balance <= 10000) {
+				$rating = 'C';
+			}
+			else if ((int)$balance > 10000 && (int)$balance <= 20000) {
+				$rating = 'B';
+			}
+			else if ((int)$balance >= 20000) {
+				$rating = 'A';
+			}
+
+			$idEscaped = $this->mysqli->real_escape_string($id);
+			$balanceEscaped = $this->mysqli->real_escape_string($balance);
+			$typeEscaped = $this->mysqli->real_escape_string($type);
+			$ratingEscaped = $this->mysqli->real_escape_string($rating);
+			$sql = "UPDATE accounts SET balance='$balanceEscaped', accountType='$typeEscaped', rating='$ratingEscaped' WHERE id = $idEscaped";
+			if (! $result = $this->mysqli->query($sql) ) {
+				$this->error = $this->mysqli->error;
+				return $this->error;
+			}
+			else {
+				return $id;
+			}
+
+
 		}
 
 
