@@ -1,11 +1,16 @@
 body {
 	margin: 10px;
 	background-color: #8ef;
-	font-family: arial;
+	font-family: 'Century Gothic';
+	background: url(http://www.pptbackgrounds.org/uploads/online-banking-concept-backgrounds-wallpapers.jpg);
+	background-size: cover;
+	height: auto;
+	width: auto;
+
 }
 
 table, th, td {
-	border: 1px solid black;
+	border: 1.5px solid black;
 	border-collapse: collapse;
 }
 
