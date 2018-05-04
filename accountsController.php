@@ -1,12 +1,11 @@
 <?php
-	require('TasksModel.php');
-	require('TasksViews.php');
+	require('accountsModel.php');
+	require('accountsViews.php');
 
-	class TasksController {
+	class accountsController {
 		private $model;
 		private $views;
 
-		private $orderBy = '';
 		private $view = '';
 		private $action = '';
 		private $message = '';
@@ -14,10 +13,10 @@
 		private $client = array();
 
 		public function __construct() {
-			$this->model = new TasksModel();
-			$this->views = new TasksViews();
+			$this->model = new accountsModel();
+			$this->views = new accountsViews();
 
-			$this->view = $_GET['view'] ? $_GET['view'] : 'tasklist';
+			$this->view = $_GET['view'] ? $_GET['view'] : 'clientlist';
 			$this->action = $_POST['action'];
 		}
 
@@ -37,10 +36,10 @@
 					$this->handleDelete();
 					break;
 				case 'add':
-					$this->handleAddTask();
+					$this->handleAddClient();
 					break;
 				case 'edit':
-					$this->handleEditTask();
+					$this->handleEditClient();
 					break;
 				case 'update':
 					$this->handleUpdateTask();
@@ -70,70 +69,70 @@
 					// echo '<pre>', var_dump($this->client), '</pre>';
 					print $this->views->accountFormView($this->client, $this->data, $this->message);
 					break;
-				case 'taskform':
-					print $this->views->taskFormView($this->data, $this->message);
+				case 'clientform':
+					print $this->views->clientFormView($this->data, $this->message);
 					break;
-				default: // 'tasklist'
-					list($tasks, $error) = $this->model->getTasks();
+				default: // 'clientlist'
+					list($tasks, $error) = $this->model->getClients();
 					if ($error) {
 						$this->message = $error;
 					}
-					print $this->views->taskListView($tasks, $this->message);
+					print $this->views->clientListView($tasks, $this->message);
 			}
 
 		}
 
 		private function handleDelete() {
-			if ($error = $this->model->deleteTask($_POST['id'])) {
+			if ($error = $this->model->deleteClient($_POST['id'])) {
 				$this->message = $error;
 			}
 			$this->view = 'tasklist';
 		}
 
-		private function handleAddTask() {
+		private function handleAddClient() {
 			if ($_POST['cancel']) {
-				$this->view = 'tasklist';
+				$this->view = 'clientlist';
 				return;
 			}
 
-			$error = $this->model->addTask($_POST);
+			$error = $this->model->addClient($_POST);
 			if ($error) {
 				$this->message = $error;
-				$this->view = 'taskform';
+				$this->view = 'clientform';
 				$this->data = $_POST;
 			}
 		}
 
-		private function handleEditTask() {
-			list($task, $error) = $this->model->getTask($_POST['id']);
+		private function handleEditClient() {
+			list($task, $error) = $this->model->getClient($_POST['id']);
 			if ($error) {
 				$this->message = $error;
-				$this->view = 'tasklist';
+				$this->view = 'clientlist';
 				return;
 			}
 			$this->data = $task;
-			$this->view = 'taskform';
+			$this->view = 'clientform';
 		}
 
-		private function handleUpdateTask() {
+		private function handleUpdateclient() {
 			if ($_POST['cancel']) {
-				$this->view = 'tasklist';
+				$this->view = 'clientlist';
 				return;
 			}
 
-			if ($error = $this->model->updateTask($_POST)) {
+			if ($error = $this->model->updateClient($_POST)) {
 				$this->message = $error;
-				$this->view = 'taskform';
+				$this->view = 'clientform';
 				$this->data = $_POST;
 				return;
 			}
 
-			$this->view = 'tasklist';
+			$this->view = 'clientlist';
 		}
 
 		private function viewAccounts() {
 			list($accounts, $error) = $this->model->getAccounts($_POST['id']);
-			list($client, $error) = $this->model->getTask($_POST['id']);
+			list($client, $error) = $this->model->getClient($_POST['id']);
 			if ($error) {
 				$this->message = $error;
 			}
@@ -160,7 +159,7 @@
 
 		private function handleEditAccount() {
 			list($account, $error) = $this->model->getAccount($_POST['id']);
-			list($client, $error) = $this->model->getTask($account['clientID']);
+			list($client, $error) = $this->model->getClient($account['clientID']);
 			if ($error) {
 				$this->message = $error;
 				$this->view = 'accountlist';
@@ -188,7 +187,7 @@
 			else {
 				list($account, $error) = $this->model->getAccount((int)$message);
 				list($accounts, $error) = $this->model->getAccounts($account['clientID']);
-				list($client, $error) = $this->model->getTask($account['clientID']);
+				list($client, $error) = $this->model->getClient($account['clientID']);
 				$this->client = $client;
 				$this->data = $accounts;
 				$this->view = 'accountlist';
@@ -205,7 +204,7 @@
 
 			list($account, $error) = $this->model->getAccount((int)$message);
 			list($accounts, $error) = $this->model->getAccounts($account['clientID']);
-			list($client, $error) = $this->model->getTask($account['clientID']);
+			list($client, $error) = $this->model->getClient($account['clientID']);
 			$this->client = $client;
 			$this->data = $accounts;
 			$this->view = 'accountlist';

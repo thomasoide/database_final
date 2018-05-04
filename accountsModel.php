@@ -1,6 +1,6 @@
 <?php
 
-	class TasksModel {
+	class accountsModel {
 		private $error = '';
 		private $mysqli;
 		// private $orderBy = 'firstName';
@@ -30,7 +30,7 @@
 			}
 		}
 
-		public function getTasks() {
+		public function getClients() {
 			$this->error = '';
 			$tasks = array();
 
@@ -41,11 +41,10 @@
 
 			$orderByEscaped = $this->mysqli->real_escape_string($this->orderBy);
 			$orderDirectionEscaped = $this->mysqli->real_escape_string($this->orderDirection);
-			$sql = "SELECT * FROM client /*ORDER BY $orderByEscaped $orderDirectionEscaped*/";
+			$sql = "SELECT * FROM client";
 			if ($result = $this->mysqli->query($sql)) {
 				if ($result->num_rows > 0) {
 					while($row = $result->fetch_assoc()) {
-						// print $row['firstName'];
 						array_push($tasks, $row);
 					}
 				}
@@ -57,7 +56,7 @@
 			return array($tasks, $this->error);
 		}
 
-		public function getTask($id) {
+		public function getClient($id) {
 			$this->error = '';
 			$task = null;
 
@@ -67,7 +66,7 @@
 			}
 
 			if (! $id) {
-				$this->error = "No id specified for task to retrieve.";
+				$this->error = "No id specified for client to retrieve.";
 				return array($task, $this->error);
 			}
 
@@ -86,7 +85,7 @@
 			return array($task, $this->error);
 		}
 
-		public function addTask($data) {
+		public function addClient($data) {
 			$this->error = '';
 
 			$firstName = $data['firstName'];
@@ -94,17 +93,17 @@
 			$email= $data['email'];
 
 			if (! $firstName ) {
-				$this->error = "No first name given. Please enter your first name.";
+				$this->error = "No first name given. Please enter client's first name.";
 				return $this->error;
 			}
 
 			if (! $lastName ) {
-				$this->error = "No last name given. Please enter your first name.";
+				$this->error = "No last name given. Please enter client's last name.";
 				return $this->error;
 			}
 
 			if (! $email) {
-				$this->error = 'No email given. Please enter your email.';
+				$this->error = "No email given. Please enter client's email.";
 				return $this->error;
 			}
 
@@ -121,28 +120,7 @@
 			return $this->error;
 		}
 
-		// public function updateTaskCompletionStatus($id, $status) {
-// 			$this->error = "";
-//
-// 			$completedDate = 'null';
-// 			if ($status == 'completed') {
-// 				$completedDate = 'NOW()';
-// 			}
-//
-// 			if (!$id) {
-// 				$this->error = "No task was specified to change completion status.";
-// 			} else {
-// 				$idEscaped = $this->mysqli->real_escape_string($id);
-// 				$sql = "UPDATE tasks SET completedDate = $completedDate WHERE id = '$idEscaped'";
-// 				if (! $result = $this->mysqli->query($sql) ) {
-// 					$this->error = $this->mysqli->error;
-// 				}
-// 			}
-//
-// 			return $this->error;
-// 		}
-
-		public function updateTask($data) {
+		public function updateClient($data) {
 			$this->error = '';
 
 			if (! $this->mysqli) {
@@ -152,7 +130,7 @@
 
 			$id = $data['id'];
 			if (! $id) {
-				$this->error = "No id specified for task to update.";
+				$this->error = "No id specified for client to update.";
 				return $this->error;
 			}
 
@@ -161,17 +139,17 @@
 			$email= $data['email'];
 
 			if (! $firstName ) {
-				$this->error = "No first name given. Please enter your first name.";
+				$this->error = "No first name given. Please enter client's first name.";
 				return $this->error;
 			}
 
 			if (! $lastName ) {
-				$this->error = "No last name given. Please enter your first name.";
+				$this->error = "No last name given. Please enter client's last name.";
 				return $this->error;
 			}
 
 			if (! $email) {
-				$this->error = 'No email given. Please enter your email.';
+				$this->error = "No email given. Please enter client's email.";
 				return $this->error;
 			}
 
@@ -187,7 +165,7 @@
 			return $this->error;
 		}
 
-		public function deleteTask($id) {
+		public function deleteClient($id) {
 			$this->error = '';
 
 			if (! $this->mysqli) {
@@ -196,7 +174,7 @@
 			}
 
 			if (! $id) {
-				$this->error = "No id specified for task to delete.";
+				$this->error = "No id specified for client to delete.";
 				return $this->error;
 			}
 

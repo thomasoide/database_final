@@ -1,7 +1,7 @@
 <?php
 
-	class TasksViews {
-		private $stylesheet = 'taskmanager.css';
+	class accountsViews {
+		private $stylesheet = 'accounts.css';
 		private $pageTitle = 'Accounts App';
 
 		public function __construct() {
@@ -93,7 +93,7 @@
 <html>
 <head>
 <title>Account</title>
-<link rel="stylesheet" type="text/css" href="taskmanager.css">
+<link rel="stylesheet" type="text/css" href="accounts.css">
 </head>
 <body>
 <h1>You are accessing an account for $firstName $lastName</h1>
@@ -125,7 +125,7 @@ EOT1;
 		<option value="Investment" {$selected['Investment']}>Investment</option>
 		<option value="Insurance" {$selected['Insurance']}>Insurance</option>
 	</select>
-	
+
 	<input type="number" name="clientID" value"" placeholder="Enter Client ID">
 
 	<input type="submit" name='submit' value="Submit"> <input type="submit" name='cancel' value="Cancel">
@@ -137,49 +137,49 @@ EOT2;
 			print $html;
 		}
 
-		public function taskListView($tasks, $message = '') {
+		public function clientListView($clients, $message = '') {
 			$body = "<h1>Clients</h1>\n";
 
 			if ($message) {
 				$body .= "<p class='message'>$message</p>\n";
 			}
 
-			$body .= "<p><a class='taskButton' href='index.php?view=taskform'>+ Add Client</a></p>\n";
+			$body .= "<p><a class='taskButton' href='index.php?view=clientform'>+ Add Client</a></p>\n";
 
-			if (count($tasks) < 1) {
+			if (count($clients) < 1) {
 				$body .= "<p>No tasks to display!</p>\n";
 				return $body;
 			}
 
 			$body .= "<table>\n";
-			$body .= "<tr><th>delete</th><th>edit</th><th>View Accounts</th>";
+			$body .= "<tr><th>Delete</th><th>Edit</th><th>Accounts</th>";
 
 			$columns = array(
                array('name' => 'firstName', label => 'First Name'),
                array('name' => 'lastName', label => 'Last Name'),
                array('name' => 'email', label => 'Email'),
-               array('name' => 'clientSince', label => 'Client Since'));
+               );
 
 			// geometric shapes in unicode
 			// http://jrgraphix.net/r/Unicode/25A0-25FF
 			foreach ($columns as $column) {
 				$name = $column['name'];
 				$label = $column['label'];
-				$body .= "<th><a class='order' href='index.php?orderby=$name'>$label</a></th>";
+				$body .= "<th><a class='order'>$label</a></th>";
 			}
 
-			foreach ($tasks as $task) {
-				$id = $task['id'];
-				$firstName = $task['firstName'];
-				$lastName = $task['lastName'];
-				$email = $task['email'];
-				$clientSince = $task['clientSince'];
+			foreach ($clients as $client) {
+				$id = $client['id'];
+				$firstName = $client['firstName'];
+				$lastName = $client['lastName'];
+				$email = $client['email'];
+				$clientSince = $client['clientSince'];
 
 				$body .= "<tr>";
 				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='delete' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Delete'></form></td>";
 				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='edit' /><input type='hidden' name='id' value='$id' /><input type='submit' value='Edit'></form></td>";
 				$body .= "<td><form action='index.php' method='post'><input type='hidden' name='action' value='viewAccounts' /><input type='hidden' name='id' value='$id' /><input type='submit' value='View Accounts'></form></td>";
-				$body .= "<td>$firstName</td><td>$lastName</td><td>$email</td><td>$clientSince</td>";
+				$body .= "<td>$firstName</td><td>$lastName</td><td>$email</td>";
 				$body .= "</tr>\n";
 			}
 			$body .= "</table>\n";
@@ -187,7 +187,7 @@ EOT2;
 			return $this->page($body);
 		}
 
-		public function taskFormView($data = null, $message = '') {
+		public function clientFormView($data = null, $message = '') {
 			$firstName = '';
 			$lastName = '';
 			$email = '';
@@ -202,7 +202,7 @@ EOT2;
 <html>
 <head>
 <title>Add a client</title>
-<link rel="stylesheet" type="text/css" href="taskmanager.css">
+<link rel="stylesheet" type="text/css" href="accounts.css">
 </head>
 <body>
 <h1>Add a client</h1>
@@ -232,9 +232,6 @@ EOT1;
 
 	<p>Email<br />
   <input type="text" name="email" value="$email" placeholder="Email" maxlength="255" size="80"></p>
-
-	<p>Client Since<br />
-  <input type="text" name="clientSince" value="2011-04-12T00:00:00.000" placeholder="Client Since" maxlength="255" size="80"></p>
 
   <input type="submit" name='submit' value="Submit"> <input type="submit" name='cancel' value="Cancel">
 </form>
