@@ -31,7 +31,7 @@ Create an application where a financial planner would be able to see all of his/
 
 ## Entity Relationship Diagram
 
-NEED TO ADD THIS
+![alt text](https://github.com/thomasoide/database_final/blob/master/ERD.png "ERD")
 
 ## CRUD Explanations
 
