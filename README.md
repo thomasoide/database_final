@@ -2,9 +2,7 @@
 
 ## Team Members
 
-Leonard Tocco
-Felipe Costa
-Thomas Oide
+Leonard Tocco, Felipe Costa, Thomas Oide
 
 ## Purpose
 
