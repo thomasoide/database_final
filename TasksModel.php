@@ -272,7 +272,7 @@
 
 			$balance = $data['balance'];
 			$type = $data['accountType'];
-			$clientID = $data['id'];
+			$clientID = $data['clientID'];
 
 			if (! $balance ) {
 				$this->error = "No balance given. Please enter an account balance.";
@@ -303,7 +303,7 @@
 			$balanceEscaped = $this->mysqli->real_escape_string($balance);
 			$typeEscaped = $this->mysqli->real_escape_string($type);
 			$ratingEscaped = $this->mysqli->real_escape_string($rating);
-			$sql = "INSERT INTO accounts (balance, accountType, rating, clientID) VALUES ('balanceEscaped', '$typeEscaped', '$ratingEscaped', '$clientID')";
+			$sql = "INSERT INTO accounts (balance, accountType, rating, clientID) VALUES ('$balanceEscaped', '$typeEscaped', '$ratingEscaped', '$clientID')";
 
 			if (! $result = $this->mysqli->query($sql)) {
 				$this->error = $this->mysqli->error;
